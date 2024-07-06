@@ -14,7 +14,7 @@ BAUD_RATE = 9600
 RUNTIME_LENGTH = 60 # seconds
 
 
-START_TIME = datetime.datetime(2024, 7, 4, 13, 50, 0, 0)
+START_TIME = datetime.datetime(2024, 7, 5, 15, 18, 0, 0)
 
 #DIRECTORY
 fileName = str(datetime.datetime.now())[0:16] # default name is date and time
@@ -36,16 +36,18 @@ temp = []
 # Read in serial data and save in csv
 endTime = datetime.datetime.now() + datetime.timedelta(seconds=RUNTIME_LENGTH)
 
-#while (datetime.datetime.now() < endTime):
-
 nLines = 0
-while (nLines < 3):
+
+while (datetime.datetime.now() < endTime):
+#while (nLines < 3):
 	value = mcu.readline()
 	value = str(value, "utf-8").split(", ")
 	if (len(value) == 3):
 		raw = [j.rstrip() for j in value]
 
-		if ((raw[2] == 'NAN') or (raw[2] == 0)):
+		if (raw[2] in {'NAN', '0.0'}):
+			break
+		elif (float(raw[2]) > 200):
 			break
 		else:
 			d1 = START_TIME + datetime.timedelta(seconds=int(raw[1])/1000)

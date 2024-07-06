@@ -33,7 +33,7 @@ def graph(s, p, time, temp):
 	plt.show()
 
 PATH = '/Users/Sreela/Documents/Personal/homeTemperatureUnit/DataCollected/' # change this to your path!
-directories = ['2024-07-04_13-46', '2024-07-04_19-12']
+directories = ['2024-07-04_13-46', '2024-07-04_19-12', '2024-07-06_00-55']
 
 headers = ['datetime', 'temp']
 dtypes = {'datetime': 'str', 'temp': 'float'}

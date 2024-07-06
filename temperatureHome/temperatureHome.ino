@@ -30,6 +30,7 @@ void loop() {
     else storedValuesRead();
     
   } else {
+    blinkN(1,1000);
     if (serialOn) Serial.println("done");
   }
 }
@@ -56,33 +57,41 @@ void storedValuesRead() {
 
   delay(500);
 }
+
+void blinkN(int n, int t_d) {
+  for (int i = 0; i < n; i++) {
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(t_d);
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(t_d);
+  }
+}
+
 void measureTemperatureWrite() {
     int updateRet = rht.update(); // gets new values from sensor
-    if (updateRet == 1) { // successful, return 1. fails <0
+    int nMaxAttempts = 30;
+    int nAttempts = 0;
+
+    // if unsuccessful and haven't exceeded max attempts, try again
+    while ( (updateRet != 1) and (nAttempts < nMaxAttempts)) {
+      blinkN(2, 100);
+      nAttempts = nAttempts + 1;
+      delay(RHT_READ_INTERVAL_MS); // if failed, try delaying
+      updateRet = rht.update();
+    }
+
+    // breaks out if successful or reached max attempts
+
+    // if successful, get and write data in memory
+    if (updateRet == 1) {    
       unsigned long t_elapsed = millis();
       float latestTempF = rht.tempF();
-
+  
       if (wEn) EEPROM.put(addr, t_elapsed);
       addr += sizeof(unsigned long);
       if (wEn) EEPROM.put(addr, latestTempF);
       addr += sizeof(float);
       if (serialOn) Serial.println(String(addr) + ", " + String(t_elapsed) + ", " + String(latestTempF, 1));
-      delay(FSAMPLING);
-    }
-    else {
-      digitalWrite(LED_BUILTIN, LOW);
-      delay(500);
-      digitalWrite(LED_BUILTIN, HIGH);
-      delay(500);
-      digitalWrite(LED_BUILTIN, LOW);
-      delay(500);
-      digitalWrite(LED_BUILTIN, HIGH);
-      delay(500);
-      digitalWrite(LED_BUILTIN, LOW);
-      
-      
-      //if (serialOn) Serial.println("here");
-      delay(RHT_READ_INTERVAL_MS); // if failed, try delaying
-    }
-  
+      delay(FSAMPLING); 
+    } 
 }
