@@ -14,7 +14,7 @@ BAUD_RATE = 9600
 RUNTIME_LENGTH = 60 # seconds
 
 
-START_TIME = datetime.datetime(2024, 7, 5, 15, 18, 0, 0)
+START_TIME = datetime.datetime(2024, 7, 6, 15, 50, 0, 0)
 
 #DIRECTORY
 fileName = str(datetime.datetime.now())[0:16] # default name is date and time
@@ -45,10 +45,11 @@ while (datetime.datetime.now() < endTime):
 	if (len(value) == 3):
 		raw = [j.rstrip() for j in value]
 
+		# if (1):
 		if (raw[2] in {'NAN', '0.0'}):
 			break
 		elif (float(raw[2]) > 200):
-			break
+			pass
 		else:
 			d1 = START_TIME + datetime.timedelta(seconds=int(raw[1])/1000)
 			t = float(raw[2])

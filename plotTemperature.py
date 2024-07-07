@@ -20,8 +20,9 @@ def graph(s, p, time, temp):
 	plt.yticks(name='Arial')
 
 	ax1.set_ylabel("Temperature (F)", name='Arial',)
-	#ax1.scatter(time, force)
-	l1 = ax1.plot(time, temp, 'r', linewidth=1.75, label='Force')
+	plt.scatter(time.tolist(), temp.tolist(), color='r')
+	ax1.set_xlim(((time.tolist())[0]).floor(freq='h'), ((time.tolist())[-1]).ceil(freq='h'))
+	l1 = ax1.plot(time, temp, 'r', linewidth=1.75, label='temp')
 	ax1.yaxis.label.set_color('r')
 	ax1.tick_params(axis='y', color='r')
 	#ax1.set_ylim(-2,10)
@@ -33,7 +34,7 @@ def graph(s, p, time, temp):
 	plt.show()
 
 PATH = '/Users/Sreela/Documents/Personal/homeTemperatureUnit/DataCollected/' # change this to your path!
-directories = ['2024-07-04_13-46', '2024-07-04_19-12', '2024-07-06_00-55']
+directories = ['2024-07-04_13-46', '2024-07-04_19-12', '2024-07-06_00-55', '2024-07-06_15-45', '2024-07-06_23-43']
 
 headers = ['datetime', 'temp']
 dtypes = {'datetime': 'str', 'temp': 'float'}

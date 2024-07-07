@@ -69,7 +69,26 @@ void blinkN(int n, int t_d) {
 
 void measureTemperatureWrite() {
     int updateRet = rht.update(); // gets new values from sensor
-    int nMaxAttempts = 30;
+    if (updateRet == 1) { // successful, return 1. fails <0
+      unsigned long t_elapsed = millis();
+      float latestTempF = rht.tempF();
+
+      if (wEn) EEPROM.put(addr, t_elapsed);
+      addr += sizeof(unsigned long);
+      if (wEn) EEPROM.put(addr, latestTempF);
+      addr += sizeof(float);
+      if (serialOn) Serial.println(String(addr) + ", " + String(t_elapsed) + ", " + String(latestTempF, 1));
+      delay(FSAMPLING);
+    }
+    else {
+      blinkN(2, 100);
+      delay(RHT_READ_INTERVAL_MS); // if failed, try delaying
+    }
+}
+
+void measureTemperatureWrite2() {
+    int updateRet = rht.update(); // gets new values from sensor
+    int nMaxAttempts = 100000;
     int nAttempts = 0;
 
     // if unsuccessful and haven't exceeded max attempts, try again
